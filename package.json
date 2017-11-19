@@ -1,0 +1,23 @@
+{
+  "name": "crooksandcheats",
+  "version": "1.0.0",
+  "description": "Final Project for 67-328, based on the Jackbox party games.",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Boober/crooksandcheats.git"
+  },
+  "author": "repouhe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Boober/crooksandcheats/issues"
+  },
+  "homepage": "https://github.com/Boober/crooksandcheats#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "morgan": "^1.9.0"
+  }
+}
