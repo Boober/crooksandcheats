@@ -1,16 +1,46 @@
-var express = require("express");
-var fs = require("fs");
-var path = require("path");
+var express = require('express');
+var fs = require('fs');
+var path = require('path');
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 var app = express();
 
 
 app.set('views',__dirname + "/views");
 app.set('view engine', 'ejs');
+
+app.use(morgan('tiny'));
+
+
+app.use(bodyParser.urlencoded({ extended: true}));
+
+ /*fs.readdirSync('./routes').forEach(function (file) {
+	console.log("Got here");
+	if (path.extname(file == '.js')) {
+		require('./routes/' + file).init(app);
+	}
+}); */
+require('./routes/monsters.js').init(app);
+
+//Setup index page route.
+
+index = function(req,res)
+{
+	res.render('help', {title: 'Help Page'});
+}
+
+app.get('/', index);
+
+
 app.use(express.static(__dirname + "/public"));
 
 
-//require('./characters.js').init(app);
+var httpServer = require('http').createServer(app);
 
-app.listen(50001);
+//var sio = require('socket.io')(httpServer);
 
-console.log("Server listenining at http://localhost:50001");
+
+httpServer.listen(50001,function()
+	{
+		console.log("Server listenining at http://localhost:50001");
+	});
