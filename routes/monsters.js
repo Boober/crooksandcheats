@@ -23,6 +23,14 @@ doCreate = function(req,res)
 		return;
 	}
 
+	//Restrict the parameters to the ones we expect. 9Don't allow user to add properties outside of what we expect.
+	else if (Object.keys(req.body).length != 4 &&
+		(!req.body.name || !req.body.health || !req.body.description || !req.body.attack))
+	{
+		res.render('message', {title: 'monsters', obj: "Invalid parameters. (Need name, health, description, and attack.)"});
+		return;
+	}
+
 
 	model.create(req.body,
 							function(result) {
