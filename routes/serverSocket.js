@@ -12,6 +12,7 @@ exports.init = function(io) {
 		 * Broadcast is not emitted back to the current (i.e. "this") connection
      */
 	//	socket.broadcast.emit('players', { number: currentPlayers});
+		var currentRoom;
 
 		socket.on('makeRoom', function(data) {
 			//Create random string: based on https://stackoverflow.com/questions/10726909/random-alpha-numeric-string-in-javascript
@@ -21,6 +22,8 @@ exports.init = function(io) {
 			console.log("Player joined room " + room);
 			socket.emit('room', {name: room});
 			socket.emit('players', { number: players});
+
+			currentRoom = room;
 		});
 
 		socket.on('joinRoom', function(data) {
@@ -29,10 +32,27 @@ exports.init = function(io) {
 			console.log("Player joined room " + data.name);
 			socket.emit('room', {name: room});
 
+			//Update player count
 			let players = io.nsps['/'].adapter.rooms[room].length;
 			socket.to(room).emit('players', { number: players});
 			socket.emit('players', { number: players});
 			socket.emit(room);
+
+			currentRoom = room;
+		});
+
+		socket.on('leaveRoom', function(data) {
+			let room = data.name;
+			socket.leave(room);
+			console.log("Player left room" + data.name);
+
+			//Update Player count
+			let players = io.nsps['/'].adapter.rooms[room].length;
+			socket.to(room).emit('players', { number: players});
+			socket.emit('players', { number: players});
+			socket.emit(room);
+
+			currentRoom = null;
 		});
 		
 		/*
@@ -42,8 +62,12 @@ exports.init = function(io) {
 		 * disconnected socket.
 		 */
 		socket.on('disconnect', function () {
-		//	--currentPlayers;
-		//	socket.broadcast.emit('players', { number: currentPlayers});
+			//If this socket was connected to a room
+			if (currentRoom)
+			{
+				let players = io.nsps['/'].adapter.rooms[currentRoom].length;
+				socket.to(currentRoom).emit('players', { number: players});
+			}
 		});
 	});
 }

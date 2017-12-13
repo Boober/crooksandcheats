@@ -1,9 +1,5 @@
-<% include ..\header.ejs %>	
-	<h4>Crooks and Cheats</h4>
+<% include ..\header.ejs %>		
 	<div id="content">
-		<p id="error"></p>
-		<p align="center"><input id="startbutt" type="button" value="Get Room" onclick="getRoom()"></p><br/>
-		<p align="center"><input id="joinroom" type="text" value="Enter Room Code">
-		<input id="enterbutt" type="button" value="Enter Room" onclick="joinRoom()"></p>
+		<% include start.ejs %>
 	</div>
 <% include ..\footer.ejs %>
