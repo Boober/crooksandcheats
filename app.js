@@ -29,7 +29,7 @@ index = function(req,res)
 	res.render('help', {title: 'Help Page'});
 }
 
-app.get('/', index);
+//app.get('/', index);
 
 
 app.use(express.static(__dirname + "/public"));
@@ -37,10 +37,14 @@ app.use(express.static(__dirname + "/public"));
 
 var httpServer = require('http').createServer(app);
 
-//var sio = require('socket.io')(httpServer);
-
+var sio = require('socket.io')(httpServer);
+//var io = sio(httpServer);
 
 httpServer.listen(50001,function()
 	{
 		console.log("Server listenining at http://localhost:50001");
 	});
+
+
+var gameSockets = require('./routes/serverSocket.js');
+gameSockets.init(sio);

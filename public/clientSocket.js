@@ -1,66 +1,45 @@
-
-//Sticking to the default namespace.
 var socket = io.connect('/');
 
-
-//all user events
-socket.on('users', function (data) {
+socket.on('players', function (data) {
   console.log(data);
-  if (data.player)
-  {
-  	$("#players").text("There is currently a player online.");
-  } else
-  {
-  	$("#players").text("There is currently no player online.");
-  }
-  $("#viewers").text("There are currently " + (data.number - data.player) + " viewers watching.");
+  $("#numPlayers").text(data.number);
+});
+
+socket.on('room', function(data) {
+	$("#roomname").text("Your room is " + data.name);
 });
 
 
+socket.on('new', function(data) {
+	console.log("A new player has entered your room.");
+})
 
+function getRoom()
+{
+	socket.emit("makeRoom");
+}
 
-//Player events
-socket.on('playing', function () {
-  //Need to install gesture handler, and dispatcher.
-	  createShiftGesture(document);
+function joinRoom()
+{
+	let rm = $("#joinroom").val();
+	socket.emit("joinRoom", {name: rm});
+}
 
-	  document.addEventListener('shiftGesture', function(e) {
-	    //Do something code.
-	    console.log("Event fired");
-	    // document.body.innerHTML += e.shift;
-	    if (e.shift == "upright") {
-	      $("#picture").attr("align","right");
-	    } else if (e.shift == "upleft") {
-	      $("#picture").attr("align","left");
-	    } else {
-	      $("#picture").attr("align","center");
-	    }
-	  });
+//Grabs a random question to display.
 
-	  document.addEventListener('shiftGesture',function(e) {
-	  	socket.emit('pshift',{shift: e.shift});
-	  });
-  });
-
-//Initialize watcher gesture listener.
-socket.on('watching', function() {
-	createShiftGesture(document);
-	document.addEventListener('shiftGesture', function(e) {
-	    console.log("Event fired");
-	    console.log(e);
-	    if (e.detail.shift == "upright") {
-	      $("#picture").attr("align","right");
-	    } else if (e.detail.shift == "upleft") {
-	      $("#picture").attr("align","left");
-	    } else {
-	      $("#picture").attr("align","center");
-	    }
+function getQuestion()
+{
+	$.ajax({
+		url: "https://opentdb.com/api.php?amount=1",
+		type: "GET",
+		success: function(resp) {
+			let res = resp.results;
+			console.log(res);
+			let question = res[0].question;
+			console.log(question);
+			$("#question").text(question);
+		}
 	});
-});
+}
 
-//Spectator events.
-socket.on('shift', function(data) {
-	console.log(data);
-	let event = new CustomEvent("shiftGesture", {detail: {"shift": data.shift} });
-	document.dispatchEvent(event);
-});
+
