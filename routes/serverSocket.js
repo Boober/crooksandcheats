@@ -1,24 +1,20 @@
 exports.init = function(io) {
 	var currentPlayers = 0; // keep track of the number of players
 
+	var rd = require('roomdata'); //Used to store variables related to specific game rooms.
+
   // When a new connection is initiated
 	io.sockets.on('connection', function (socket) {
-//		++currentPlayers;
-		// Send ("emit") a 'players' event back to the socket that just connected.
-	//	socket.emit('players', { number: currentPlayers});
-//		socket.emit('welcome', { playernum: currentPlayers});
-		/*
-		 * Emit players events also to all (i.e. broadcast) other connected sockets.
-		 * Broadcast is not emitted back to the current (i.e. "this") connection
-     */
-	//	socket.broadcast.emit('players', { number: currentPlayers});
+
 		var currentRoom;
 
 		socket.on('makeRoom', function(data) {
 			//Create random string: based on https://stackoverflow.com/questions/10726909/random-alpha-numeric-string-in-javascript
 			let room = Math.random().toString(36).slice(8);
 			let players = 1;
-			socket.join(room);
+//			socket.join(room);
+			rd.joinRoom(socket,room);
+			rd.set(socket,"players", players);
 			console.log("Player joined room " + room);
 			socket.emit('room', {name: room});
 			socket.emit('players', { number: players});
@@ -28,31 +24,46 @@ exports.init = function(io) {
 
 		socket.on('joinRoom', function(data) {
 			let room = data.name;
-			socket.join(room);
-			console.log("Player joined room " + data.name);
-			socket.emit('room', {name: room});
+	//		socket.join(room);
+			rd.joinRoom(socket,room);
+			
 
 			//Update player count
-			let players = io.nsps['/'].adapter.rooms[room].length;
+		/*	let players = io.nsps['/'].adapter.rooms[room].length;
 			socket.to(room).emit('players', { number: players});
 			socket.emit('players', { number: players});
 			socket.emit(room);
+*/
+			currentRoom = room; 
+			let players = rd.get(socket,"players");
+			console.log("Players: " + players);
+			let newnum = (players) ? players + 1 : 1;
+			rd.set(socket,"players",newnum);
 
-			currentRoom = room;
+			console.log("Player joined room " + data.name);
+			socket.to(room).emit('players', { number: newnum});
+			socket.emit('players', { number: newnum});
+			socket.emit('room', {name: room});
 		});
 
 		socket.on('leaveRoom', function(data) {
 			let room = data.name;
-			socket.leave(room);
+
+			let players = rd.get(socket,"players");
+			console.log("Players: " + players);
+			let newnum = (players) ? players - 1 : 0;
+			rd.set(socket,"players",newnum);
+			rd.leaveRoom(socket);
+		//	socket.leave(room);
 			console.log("Player left room" + data.name);
 
 			//Update Player count
-			let players = io.nsps['/'].adapter.rooms[room].length;
-			socket.to(room).emit('players', { number: players});
-			socket.emit('players', { number: players});
-			socket.emit(room);
+		//	let players = io.nsps['/'].adapter.rooms[room].length;
+			socket.to(room).emit('players', { number: newnum});
+			socket.emit('players', { number: newnum});
+//			socket.emit(room);
 
-			currentRoom = null;
+			currentRoom = null; 
 		});
 		
 		/*
@@ -63,11 +74,17 @@ exports.init = function(io) {
 		 */
 		socket.on('disconnect', function () {
 			//If this socket was connected to a room
+
+		    let players = rd.get(socket,"players");
+			let newnum = (players) ? players - 1 : 0;
+			rd.set(socket,"players",newnum);
+			rd.leaveRoom(socket);
+
 			if (currentRoom)
 			{
-				let players = io.nsps['/'].adapter.rooms[currentRoom].length;
-				socket.to(currentRoom).emit('players', { number: players});
-			}
+		//		let players = io.nsps['/'].adapter.rooms[currentRoom].length;
+				socket.to(currentRoom).emit('players', { number: newnum});
+			} 
 		});
 	});
 }
