@@ -15,6 +15,7 @@ exports.init = function(io) {
 //			socket.join(room);
 			rd.joinRoom(socket,room);
 			rd.set(socket,"players", players);
+			rd.set(socket,"inprogress",false); //Track whether the game has started.
 			console.log("Player joined room " + room);
 			socket.emit('room', {name: room});
 			socket.emit('players', { number: players});
@@ -48,8 +49,13 @@ exports.init = function(io) {
 
 		socket.on('leaveRoom', function(data) {
 			let room = data.name;
-
-			let players = rd.get(socket,"players");
+			let players;
+			try{
+				players = rd.get(socket,"players");
+			} catch (e) {
+				players = null;
+			}
+		//	let players = rd.get(socket,"players");
 			console.log("Players: " + players);
 			let newnum = (players) ? players - 1 : 0;
 			rd.set(socket,"players",newnum);
@@ -74,12 +80,16 @@ exports.init = function(io) {
 		 */
 		socket.on('disconnect', function () {
 			//If this socket was connected to a room
-
-		    let players = rd.get(socket,"players");
-			let newnum = (players) ? players - 1 : 0;
-			rd.set(socket,"players",newnum);
-			rd.leaveRoom(socket);
-
+			let players;
+			try{
+				players = rd.get(socket,"players");
+				let newnum = (players) ? players - 1 : 0;
+				rd.set(socket,"players",newnum);
+				rd.leaveRoom(socket);
+			} catch (e) {
+				players = null;
+			}
+		    
 			if (currentRoom)
 			{
 		//		let players = io.nsps['/'].adapter.rooms[currentRoom].length;
