@@ -1,18 +1,9 @@
-<!DOCTYPE HTML>
-<html>
-	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-	<!-- Notice that socket.io adds a path to its client-side js that is not in /public -->
-	<script src="/socket.io/socket.io.js"></script>
-	<!-- This is my example client-side javascript that uses socket.io -->
-	<script src="clientSocket.js"></script>
-	<body>
-		<p> There are currently <span id="numPlayers">no</span> players in this room.</p>
-		<p id="welcome"></p>
-		<p align="center"><input id="startbutt" type="button" value="Get Random Question" onclick="getQuestion()"></p><br/>
-		<p id="question"></p><br/>
+<% include ..\header.ejs %>	
+	<h4>Crooks and Cheats</h4>
+	<div id="content">
+		<p id="error"></p>
 		<p align="center"><input id="startbutt" type="button" value="Get Room" onclick="getRoom()"></p><br/>
-		<p id="roomname"></p><br/>
 		<p align="center"><input id="joinroom" type="text" value="Enter Room Code">
 		<input id="enterbutt" type="button" value="Enter Room" onclick="joinRoom()"></p>
-	</body>
-</html>
+	</div>
+<% include ..\footer.ejs %>

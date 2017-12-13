@@ -31,6 +31,10 @@ index = function(req,res)
 
 app.get('/', index);
 
+app.get('/lobby', function (req, res) {
+	res.render('lobby/lobby');
+});
+
 
 app.use(express.static(__dirname + "/public"));
 

@@ -16,13 +16,37 @@ socket.on('new', function(data) {
 
 function getRoom()
 {
-	socket.emit("makeRoom");
+	//Render lobby view before attempting to make a new room.
+	$.ajax({
+		type: 'GET',
+		url: '/lobby',
+		success: function(result) {
+		//	$("#content").clear();
+			console.log($("#content").text());
+			$("#content").html(result);
+			socket.emit("makeRoom");
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + e);
+		}
+	});	
 }
 
 function joinRoom()
 {
 	let rm = $("#joinroom").val();
-	socket.emit("joinRoom", {name: rm});
+	$.ajax({
+		type: 'GET',
+		url: '/lobby',
+		success: function(result) {
+			$("#content").html(result);
+			socket.emit("joinRoom", {name: rm});
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + e);
+		}
+	});
+
 }
 
 //Grabs a random question to display.
