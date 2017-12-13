@@ -1,7 +1,7 @@
 
 
 //include the model
-var model = require("../models/monsters.js");
+var model = require("../models/abilities.js");
 
 //Define the collection name.
 let cname = "abilities";
