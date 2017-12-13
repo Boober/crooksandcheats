@@ -26,10 +26,10 @@ require('./routes/monsters.js').init(app);
 
 index = function(req,res)
 {
-	res.render('help', {title: 'Help Page'});
+	res.render('lobby/index', {title: 'Getting Started'});
 }
 
-//app.get('/', index);
+app.get('/', index);
 
 
 app.use(express.static(__dirname + "/public"));
