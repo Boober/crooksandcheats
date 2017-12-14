@@ -14,13 +14,16 @@ app.use(morgan('tiny'));
 
 app.use(bodyParser.urlencoded({ extended: true}));
 
- /*fs.readdirSync('./routes').forEach(function (file) {
+fs.readdirSync('./routes').forEach(function (file) {
 	console.log("Got here");
-	if (path.extname(file == '.js')) {
-		require('./routes/' + file).init(app);
+	if (path.basename(file) != 'serverSocket.js')
+	{
+		if (path.extname(file) == '.js') {
+			require('./routes/' + file).init(app);
+		}	
 	}
-}); */
-require('./routes/monsters.js').init(app);
+});
+//require('./routes/monsters.js').init(app);
 
 //Setup index page route.
 

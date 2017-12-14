@@ -10,9 +10,31 @@ exports.init = function(app)
 {
 	app.put("/" + cname, doCreate);
 	app.get("/" + cname, doRetrieve);
+	app.get("/all/" + cname, RetrieveAll);
 	app.post("/" + cname, doUpdate);
 	app.delete("/" + cname, doDelete);
 }
+
+
+RetrieveAll = function(req,res)
+{
+	model.retrieveAll(null,
+								function(modelData) {
+									if (modelData.length)
+									{
+										console.log("Rendering results.");
+										res.json(modelData);
+
+									} else {
+										console.log("No documents.");
+							//			var message = "No documents with" + JSON.stringify(req.query)+
+					//									" in collection " + cname + " found.";
+				//						res.render('message', {title: 'monsters', obj: message});			
+										res.json({});
+									}
+								});
+}
+
 
 
 doCreate = function(req,res)

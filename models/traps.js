@@ -55,7 +55,17 @@ exports.retrieve = function(query,callback)
 		if (err) doError(err);
 		console.log("No errors, performing callback.");
 		callback(docs);
-	})
+	});
+}
+
+/******** Get All *****/
+exports.retrieveAll = function(query,callback)
+{
+	mongoDB.collection("traps").find({}).toArray(function(err,docs)
+	{
+		if (err) doError(err);
+		callback(docs);
+	});
 }
 
 

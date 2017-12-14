@@ -77,7 +77,13 @@ function leaveRoom()
 
 function startGame()
 {
-	socket.emit("startGame");
+	let gameinfo = {};
+	GetMonsters(gameinfo);
+	GetAbilities(gameinfo);
+	GetTraps(gameinfo);
+	getQuestionSet(gameinfo);
+	console.log(gameinfo);
+	socket.emit("startGame", {info: gameinfo});
 }
 
 
@@ -85,19 +91,76 @@ function startGame()
 
 //Grabs a random question to display.
 
-function getQuestion()
+function getQuestionSet(arr)
 {
+		$.ajax({
+			url: "https://opentdb.com/api.php?amount=50",
+			type: "GET",
+			async: false,
+			success: function(resp) {
+				let res = resp.results;
+				arr["questions"] = res;
+			},
+			error: function(resp) {
+				console.log("error");
+			}
+		});
+}
+
+
+function GetMonsters(arr)
+{
+	console.log("Getting Monsters...");
 	$.ajax({
-		url: "https://opentdb.com/api.php?amount=50",
-		type: "GET",
-		success: function(resp) {
-			let res = resp.results;
-			console.log(res);
-			let question = res[0].question;
-			console.log(question);
-			$("#question").text(question);
+		type: 'GET',
+		url: '/all/monsters',
+		async: false,
+		success: function(result) {
+			console.log(result);
+			arr["monsters"] = result;
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + e);
 		}
 	});
 }
+
+function GetAbilities(arr)
+{
+	console.log("Getting Abilitiess...");
+	$.ajax({
+		type: 'GET',
+		url: '/all/abilities',
+		async: false,
+		success: function(result) {
+			console.log(result);
+			//arr.push(result);
+			arr["abilities"] = result;
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + err);
+		}
+	});
+}
+
+function GetTraps(arr)
+{
+	console.log("Getting Traps...");
+	$.ajax({
+		type: 'GET',
+		url: '/all/traps',
+		aync: false,
+		success: function(result) {
+			console.log(result);
+		//	arr.push(result);
+			arr["traps"] = result;
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + err);
+		}
+	});
+}
+
+
 
 

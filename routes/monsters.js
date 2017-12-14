@@ -27,9 +27,10 @@ RetrieveAll = function(req,res)
 
 									} else {
 										console.log("No documents.");
-										var message = "No documents with" + JSON.stringify(req.query)+
-														" in collection " + cname + " found.";
-										res.render('message', {title: 'monsters', obj: message});			
+							//			var message = "No documents with" + JSON.stringify(req.query)+
+					//									" in collection " + cname + " found.";
+				//						res.render('message', {title: 'monsters', obj: message});			
+										res.json({});
 									}
 								});
 }

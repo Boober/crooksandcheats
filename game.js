@@ -244,19 +244,5 @@ class Game {
 
 	//Grabs a random question to display.
 
-	function getQuestionSet()
-	{
-		$.ajax({
-			url: "https://opentdb.com/api.php?amount=50",
-			type: "GET",
-			async: true,
-			success: function(resp) {
-				let res = resp.results;
-				this.questionSet = res;
-			},
-			error: function(resp) {
-				console.log("error");
-			}
-		});
-	}
+	
 }

@@ -73,8 +73,8 @@ exports.init = function(io) {
 		});
 
 		socket.on('startGame', function(data) {
-			GetMonsters();
-		})
+			console.log("Starting Data: " + data.info);
+		});
 		
 		/*
 		 * Upon this connection disconnecting (sending a disconnect event)
@@ -116,17 +116,4 @@ exports.init = function(io) {
 
 /************* Ajax Functions ****************************/
 
-function GetMonsters()
-{
-	console.log("Getting Monsters...");
-	$.ajax({
-		type: 'GET',
-		url: '/all/monsters',
-		success: function(result) {
-			console.log(result);
-		},
-		error: function(err) {
-			$("#error").text("Making room failed. Error: " + e);
-		}
-	});
-}
+
