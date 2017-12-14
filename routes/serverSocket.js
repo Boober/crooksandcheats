@@ -48,7 +48,7 @@ exports.init = function(io) {
 		});
 
 		socket.on('leaveRoom', function(data) {
-			let room = data.name;
+	//		let room = data.name;
 			let players;
 			try{
 				players = rd.get(socket,"players");
@@ -61,11 +61,11 @@ exports.init = function(io) {
 			rd.set(socket,"players",newnum);
 			rd.leaveRoom(socket);
 		//	socket.leave(room);
-			console.log("Player left room" + data.name);
+		//	console.log("Player left room" + data.name);
 
 			//Update Player count
 		//	let players = io.nsps['/'].adapter.rooms[room].length;
-			socket.to(room).emit('players', { number: newnum});
+			socket.to(currentRoom).emit('players', { number: newnum});
 			socket.emit('players', { number: newnum});
 //			socket.emit(room);
 

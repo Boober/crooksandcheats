@@ -35,6 +35,10 @@ app.get('/lobby', function (req, res) {
 	res.render('lobby/lobby');
 });
 
+app.get('/start', function (req,res) {
+	res.render('lobby/start');
+});
+
 
 app.use(express.static(__dirname + "/public"));
 
