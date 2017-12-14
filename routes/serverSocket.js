@@ -71,6 +71,10 @@ exports.init = function(io) {
 
 			currentRoom = null; 
 		});
+
+		socket.on('startGame', function(data) {
+			GetMonsters();
+		})
 		
 		/*
 		 * Upon this connection disconnecting (sending a disconnect event)
@@ -96,5 +100,33 @@ exports.init = function(io) {
 				socket.to(currentRoom).emit('players', { number: newnum});
 			} 
 		});
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/************* Ajax Functions ****************************/
+
+function GetMonsters()
+{
+	console.log("Getting Monsters...");
+	$.ajax({
+		type: 'GET',
+		url: '/all/monsters',
+		success: function(result) {
+			console.log(result);
+		},
+		error: function(err) {
+			$("#error").text("Making room failed. Error: " + e);
+		}
 	});
 }

@@ -75,34 +75,10 @@ function leaveRoom()
 	});	
 }
 
-function StartGame()
+function startGame()
 {
-	let rm = $("#joinroom").val();
-	$.ajax({
-		type: 'GET',
-		url: '/lobby',
-		success: function(result) {
-			$("#content").html(result);
-			socket.emit("joinRoom", {name: rm});
-		},
-		error: function(err) {
-			$("#error").text("Making room failed. Error: " + e);
-		}
-	});
-
+	socket.emit("startGame");
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -112,7 +88,7 @@ function StartGame()
 function getQuestion()
 {
 	$.ajax({
-		url: "https://opentdb.com/api.php?amount=1",
+		url: "https://opentdb.com/api.php?amount=50",
 		type: "GET",
 		success: function(resp) {
 			let res = resp.results;
