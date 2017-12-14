@@ -9,6 +9,12 @@ socket.on('players', function (data) {
   	$("#startgame").empty();
   	$("#startgame").html("<p align='center'><input id='startbutt' type='button' value='Start Game' onclick='startGame()'></p><br/>");
   }
+
+  if (data.joined)
+  {
+  	$("#name").val("Player " + data.number);
+  }
+
 });
 
 socket.on('room', function(data) {
@@ -31,6 +37,7 @@ function getRoom()
 			console.log($("#content").text());
 			$("#content").html(result);
 			socket.emit("makeRoom");
+			  $("#name").val("Player " + 1);
 		},
 		error: function(err) {
 			$("#error").text("Making room failed. Error: " + e);

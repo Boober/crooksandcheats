@@ -43,7 +43,7 @@ exports.init = function(io) {
 
 			console.log("Player joined room " + data.name);
 			socket.to(room).emit('players', { number: newnum});
-			socket.emit('players', { number: newnum});
+			socket.emit('players', { number: newnum, joined: true});
 			socket.emit('room', {name: room});
 		});
 
@@ -74,6 +74,41 @@ exports.init = function(io) {
 
 		socket.on('startGame', function(data) {
 			console.log("Starting Data: " + data.info);
+			let info = data.info;
+			let monsters = data.monsters;
+			let abilities = data.abilities;
+			let traps = data.traps;
+			let questions = data.questions;
+			//Take the information, and classify them into different
+			//challenge types for players to complete.
+			let challenges = [];
+			for (let i = 0; i < questions.length; i++)
+			{
+				let challenge = {"type":"question"};
+				challenge["data"] = questions[i];
+				challenges.push(challenge);
+			}
+			for (let i = 0; i < traps.length; i++)
+			{
+				let challenge = {"type":"trap"};
+				challenge["data"] = traps[i];
+				challenges.push(challenge);
+			}
+			for (let i = 0; i < monsters.length; i++)
+			{
+				let challenge = {"type":"monsters"};
+				challenge["data"] = monsters[i];
+				challenges.push(challenge);
+			}
+			for (let i = 0; i < abilities.length;i++)
+			{
+				let challenge = {"type":"abilities"};
+				challenge["data"] = abilities[i];
+				challenges.push(challenge);
+			}
+
+			rd.set(socket,"challenges",challenges);
+			rd.set(socket,"inprogress",true);
 		});
 		
 		/*
@@ -94,7 +129,7 @@ exports.init = function(io) {
 				players = null;
 			}
 		    
-			if (currentRoom)
+			if (currentRoom && players != nullo)
 			{
 		//		let players = io.nsps['/'].adapter.rooms[currentRoom].length;
 				socket.to(currentRoom).emit('players', { number: newnum});
