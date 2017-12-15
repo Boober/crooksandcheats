@@ -75,40 +75,61 @@ exports.init = function(io) {
 		socket.on('startGame', function(data) {
 			console.log("Starting Data: " + data.info);
 			let info = data.info;
-			let monsters = data.monsters;
-			let abilities = data.abilities;
-			let traps = data.traps;
-			let questions = data.questions;
+			let monsters = info["monsters"];
+			let abilities = info["abilities"];
+			let traps = info["traps"];
+			let questions = info["questions"];
 			//Take the information, and classify them into different
 			//challenge types for players to complete.
 			let challenges = [];
-			for (let i = 0; i < questions.length; i++)
+			if (questions)
 			{
-				let challenge = {"type":"question"};
-				challenge["data"] = questions[i];
-				challenges.push(challenge);
+				for (let i = 0; i < questions.length; i++)
+				{
+					let challenge = {"type":"question"};
+					challenge["data"] = questions[i];
+					challenges.push(challenge);
+				}
 			}
-			for (let i = 0; i < traps.length; i++)
+			if (traps)
 			{
-				let challenge = {"type":"trap"};
-				challenge["data"] = traps[i];
-				challenges.push(challenge);
+				for (let i = 0; i < traps.length; i++)
+				{
+					let challenge = {"type":"trap"};
+					challenge["data"] = traps[i];
+					challenges.push(challenge);
+				}	
 			}
-			for (let i = 0; i < monsters.length; i++)
+			if (monsters)
 			{
-				let challenge = {"type":"monsters"};
-				challenge["data"] = monsters[i];
-				challenges.push(challenge);
+				for (let i = 0; i < monsters.length; i++)
+				{
+					let challenge = {"type":"monsters"};
+					challenge["data"] = monsters[i];
+					challenges.push(challenge);
+				}	
 			}
-			for (let i = 0; i < abilities.length;i++)
+			if (abilities)
 			{
-				let challenge = {"type":"abilities"};
-				challenge["data"] = abilities[i];
-				challenges.push(challenge);
+				for (let i = 0; i < abilities.length;i++)
+				{
+					let challenge = {"type":"abilities"};
+					challenge["data"] = abilities[i];
+					challenges.push(challenge);
+				}	
 			}
-
+			console.log(challenges);
 			rd.set(socket,"challenges",challenges);
 			rd.set(socket,"inprogress",true);
+			socket.to(currentRoom).emit("beginGame");
+			socket.emit("beginGame");
+			socket.to(currentRoom).emit("distributeChallenges",{ c : challenges});
+			socket.emit("distributeChallenges",{c : challenges});
+			//Display start messages and allow time for challenges to distribute between clients.
+			setTimeout(function() {
+				socket.to(currentRoom).emit("startRound");
+				socket.emit("startRound");
+			},2000);
 		});
 		
 		/*
@@ -129,7 +150,7 @@ exports.init = function(io) {
 				players = null;
 			}
 		    
-			if (currentRoom && players != nullo)
+			if (currentRoom && players != null)
 			{
 		//		let players = io.nsps['/'].adapter.rooms[currentRoom].length;
 				socket.to(currentRoom).emit('players', { number: newnum});

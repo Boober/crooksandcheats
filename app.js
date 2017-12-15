@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var app = express();
 
 
+var jsonParser = bodyParser.json();
+
 app.set('views',__dirname + "/views");
 app.set('view engine', 'ejs');
 
@@ -38,8 +40,21 @@ app.get('/lobby', function (req, res) {
 	res.render('lobby/lobby');
 });
 
+app.get('/game/game', function (req, res) {
+	res.render('game/game');
+});
+
 app.get('/start', function (req,res) {
 	res.render('lobby/start');
+});
+
+app.post('/game/challenge', jsonParser, function (req,res) {
+	console.log("Got here.");
+	console.log(req.body);
+	res.render('game/challenge', { encounter: req.body.name, options: req.body.list}, function(err, html) {
+		console.log(html);
+		res.send(html);
+	});
 });
 
 
