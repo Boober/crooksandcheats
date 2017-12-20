@@ -94,8 +94,6 @@ function startGame()
 }
 
 
-
-
 //Grabs a random question to display.
 
 function getQuestionSet(arr)
@@ -169,12 +167,6 @@ function GetTraps(arr)
 }
 
 
-
-
-
-
-
-
 /************** Game Socket events ********************************/
 
 var playerStats;
@@ -217,9 +209,6 @@ socket.on('startRound', function(data) {
 	displayChallenge(challenge);
 	//console.log(challenge);
 });
-
-
-
 
 // Taken from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 
